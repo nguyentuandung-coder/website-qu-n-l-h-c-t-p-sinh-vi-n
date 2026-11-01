@@ -89,10 +89,7 @@ class GradeService
         return $classes;
     }
 
-    public function getAllGrade()
-    {
-        return $this->getAllGrades();
-    }
+
 
     public function getGradeById($id)
     {

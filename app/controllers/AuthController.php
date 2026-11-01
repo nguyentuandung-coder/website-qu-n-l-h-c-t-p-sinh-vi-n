@@ -54,17 +54,6 @@ class AuthController {
         }
     }
 
-    public function register() {
-        // He thong thuan Quan tri vien khong mo dang ky cong khai
-        header('Location: ?controller=auth&action=login');
-        exit;
-    }
-
-    public function processRegister() {
-        header('Location: ?controller=auth&action=login');
-        exit;
-    }
-
     public function logout() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();

@@ -57,8 +57,8 @@ if (($_SESSION['user_role'] ?? '') !== 'admin') {
     exit;
 }
 
-// Khi da dang nhap: Neu truy cap login/register -> Chuyen huong ve trang chu
-if ($controller === 'login' || $controller === 'register' || ($controller === 'auth' && $action !== 'logout')) {
+// Khi da dang nhap: Neu truy cap login -> Chuyen huong ve trang chu
+if ($controller === 'login' || ($controller === 'auth' && $action !== 'logout')) {
     header('Location: ?controller=home');
     exit;
 }
@@ -104,8 +104,6 @@ else if ($controller === 'subject' && ($action === 'index' || empty($action))) {
     } else {
         $subjectController->edit($id);
     }
-} else if ($controller === 'updateSubject') {
-    $subjectController->update($id);
 } else if ($controller === 'deleteSubject' || ($controller === 'subject' && $action === 'delete')) {
     $subjectController->delete($id);
 }
@@ -124,8 +122,6 @@ else if ($controller === 'grade' && ($action === 'index' || empty($action))) {
     } else {
         $gradeController->edit($id);
     }
-} else if ($controller === 'updateGrade' || ($controller === 'grade' && $action === 'update')) {
-    $gradeController->update($id);
 } else if ($controller === 'deleteGrade' || ($controller === 'grade' && $action === 'delete')) {
     $gradeController->delete($id);
 } else {

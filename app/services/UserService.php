@@ -9,12 +9,6 @@ class UserService {
         $db = new DbConnection();
         $this->conn = $db->getConnection();
     }
-    public function emailExists($email) {
-        if ($this->conn == null) return false;
-        $stmt = $this->conn->prepare("SELECT COUNT(*) FROM users WHERE email = :email");
-        $stmt->execute([':email' => trim($email)]);
-        return (int)$stmt->fetchColumn() > 0;
-    }
 
     public function findByEmail($email) {
         if ($this->conn == null || empty($email)) return null;
@@ -35,10 +29,6 @@ class UserService {
             );
         }
         return null;
-    }
-
-    public function findByEmailOrCode($identifier) {
-        return $this->findByEmail($identifier);
     }
 
     public function login($identifier, $password) {

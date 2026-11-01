@@ -104,7 +104,7 @@
                             </p>
                         </div>
 
-                        <div class="user-icon" title="<?= htmlspecialchars($_SESSION['user_code'] ?? '') ?>">
+                        <div class="user-icon">
                             <i class="bi bi-person-fill"></i>
                         </div>
 

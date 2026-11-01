@@ -26,10 +26,6 @@ class SubjectService {
         return $subjects;
     }
 
-    public function getAllSubject() {
-        return $this->getAllSubjects();
-    }
-
     public function getSubjectById($id) {
         $dbConnection = new DBConnection();
 

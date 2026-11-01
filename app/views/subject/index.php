@@ -82,10 +82,10 @@
                     <div class="user-info">
                         <div class="text-end">
                             <strong><?= htmlspecialchars($_SESSION['user_name'] ?? 'Quản trị viên') ?></strong>
-                            <p><?= (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'student') ? 'Sinh viên' : ((isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'teacher') ? 'Giảng viên' : 'Quản trị hệ thống') ?></p>
+                            <p>Quản trị hệ thống</p>
                         </div>
 
-                        <div class="user-icon" title="<?= htmlspecialchars($_SESSION['user_code'] ?? '') ?>">
+                        <div class="user-icon">
                             <i class="bi bi-person-fill"></i>
                         </div>
 
