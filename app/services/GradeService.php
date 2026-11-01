@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once APP_ROOT . '/app/libs/DbConnection.php';
 require_once APP_ROOT . '/app/models/Grade.php';
 
@@ -14,18 +14,6 @@ class GradeService
             $conn = $dbConnection->getConnection();
 
             if ($conn != null) {
-                // Tu dong tao bang diem neu chua co
-                $createTableSql = "CREATE TABLE IF NOT EXISTS grades (
-                    id INT PRIMARY KEY AUTO_INCREMENT,
-                    student_id INT NOT NULL,
-                    subject_id INT NOT NULL,
-                    score DECIMAL(4,2) NOT NULL,
-                    FOREIGN KEY (student_id) REFERENCES students(id),
-                    FOREIGN KEY (subject_id) REFERENCES subjects(id)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
-
-                $conn->exec($createTableSql);
-
                 [$nameColumn, $classColumn] = $this->getStudentColumns($conn);
                 $sql = "SELECT g.*, s.student_code, s.$nameColumn AS student_name,
                                s.$classColumn AS student_class, sub.name AS subject_name
@@ -106,7 +94,7 @@ class GradeService
         $conn = $dbConnection->getConnection();
 
         if ($conn === null) {
-            throw new RuntimeException('Không thể kết nối cơ sở dữ liệu để kiểm tra mã sinh viên.');
+            throw new RuntimeException('KhÃ´ng thá»ƒ káº¿t ná»‘i cÆ¡ sá»Ÿ dá»¯ liá»‡u Ä‘á»ƒ kiá»ƒm tra mÃ£ sinh viÃªn.');
         }
 
         [$nameColumn, $classColumn] = $this->getStudentColumns($conn);
@@ -240,7 +228,7 @@ class GradeService
             : (in_array('class', $columns, true) ? 'class' : null);
 
         if ($nameColumn === null || $classColumn === null) {
-            throw new RuntimeException('Không tìm thấy cột họ tên hoặc lớp trong bảng students.');
+            throw new RuntimeException('KhÃ´ng tÃ¬m tháº¥y cá»™t há» tÃªn hoáº·c lá»›p trong báº£ng students.');
         }
 
         return [$nameColumn, $classColumn];
