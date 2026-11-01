@@ -7,10 +7,11 @@ class Grade
     private $name;
     private $class_name;
     private $subject_id;
+    private $subject_code;
     private $subject_name;
     private $score;
 
-    public function __construct($id, $student_id, $subject_id, $score, $student_code = null, $name = null, $class_name = null, $subject_name = null)
+    public function __construct($id, $student_id, $subject_id, $score, $student_code = null, $name = null, $class_name = null, $subject_name = null, $subject_code = null)
     {
         $this->id = $id;
         $this->student_id = $student_id;
@@ -19,6 +20,7 @@ class Grade
         $this->class_name = $class_name;
         $this->subject_id = $subject_id;
         $this->subject_name = $subject_name;
+        $this->subject_code = $subject_code;
         $this->score = $score;
     }
 
@@ -45,6 +47,10 @@ class Grade
     public function getSubjectId()
     {
         return $this->subject_id;
+    }
+    public function getSubjectCode()
+    {
+        return $this->subject_code;
     }
     public function getSubjectName()
     {
@@ -78,6 +84,10 @@ class Grade
     public function setSubjectId($subject_id)
     {
         $this->subject_id = $subject_id;
+    }
+    public function setSubjectCode($subject_code)
+    {
+        $this->subject_code = $subject_code;
     }
     public function setSubjectName($subject_name)
     {

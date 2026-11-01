@@ -81,11 +81,12 @@
                         </div>
 
                         <div class="form-group-custom">
-                            <label for="subject_id" class="form-label-custom">ID môn học <span class="text-danger">*</span></label>
+                            <label for="subject_code" class="form-label-custom">Mã môn học <span class="text-danger">*</span></label>
                             <div class="input-wrapper">
                                 <span class="input-icon"><i class="bi bi-book"></i></span>
-                                <input type="number" class="form-input-custom" id="subject_id" name="subject_id"
-                                    min="1" value="<?= htmlspecialchars((string)($subject_id ?? $grade->getSubjectId())) ?>" required>
+                                <input type="text" class="form-input-custom" id="subject_code" name="subject_code"
+                                    value="<?= htmlspecialchars($subjectCode ?? (string)($grade->getSubjectCode() ?? '')) ?>"
+                                    placeholder="Nhập mã môn học đã tồn tại" required>
                             </div>
                         </div>
 

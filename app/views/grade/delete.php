@@ -89,7 +89,7 @@
                         </div>
                         <div class="info-row">
                             <span class="info-label">Môn học:</span>
-                            <span class="info-value"><?= htmlspecialchars((string)($grade->getSubjectName() ?? 'Không xác định')) ?> (ID: <?= htmlspecialchars((string)$grade->getSubjectId()) ?>)</span>
+                            <span class="info-value"><?= htmlspecialchars((string)($grade->getSubjectName() ?? 'Không xác định')) ?> (Mã môn: <?= htmlspecialchars((string)($grade->getSubjectCode() ?? $grade->getSubjectId())) ?>)</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Điểm:</span>

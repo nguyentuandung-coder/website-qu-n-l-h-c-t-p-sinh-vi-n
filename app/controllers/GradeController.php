@@ -25,7 +25,7 @@ class GradeController
     public function add()
     {
         $studentCode = '';
-        $subject_id = '';
+        $subjectCode = '';
         $scoreInput = '';
         $errorMessage = null;
         include_once APP_ROOT . '/app/views/grade/add.php';
@@ -34,27 +34,27 @@ class GradeController
     // Xu ly them diem
     public function store()
     {
-        $studentCode = trim($_POST['student_code'] ?? '');
-        $subject_id = (int)($_POST['subject_id'] ?? 0);
+        $studentCode = strtoupper(trim($_POST['student_code'] ?? ''));
+        $subjectCode = strtoupper(trim($_POST['subject_code'] ?? ''));
         $scoreInput = $_POST['score'] ?? null;
         $score = is_numeric($scoreInput) ? (float)$scoreInput : -1;
         $gradeService = new GradeService();
         $student = $studentCode !== '' ? $gradeService->getStudentByCode($studentCode) : null;
-        $subject = $subject_id > 0 ? $gradeService->getSubjectById($subject_id) : null;
+        $subject = $subjectCode !== '' ? $gradeService->getSubjectByCode($subjectCode) : null;
 
         if ($student === null) {
             $errorMessage = 'Mã sinh viên không tồn tại. Vui lòng kiểm tra lại.';
         } elseif ($subject === null) {
-            $errorMessage = 'ID môn học không tồn tại trong hệ thống. Vui lòng kiểm tra lại.';
+            $errorMessage = 'Mã môn học không tồn tại trong hệ thống. Vui lòng kiểm tra lại.';
         } elseif ($score < 0 || $score > 10) {
             $errorMessage = 'Vui lòng nhập điểm từ 0 đến 10.';
-        } elseif ($gradeService->hasGradeForSubject($student['id'], $subject_id)) {
-            $subjectName = $subject['name'] ?? "ID #$subject_id";
+        } elseif ($gradeService->hasGradeForSubject($student['id'], $subject['id'])) {
+            $subjectName = $subject['name'] ?? $subjectCode;
             $studentName = $student['student_name'] ?? $studentCode;
-            $errorMessage = "Sinh viên {$studentName} ({$studentCode}) đã có điểm môn \"{$subjectName}\". Vui lòng chỉnh sửa điểm hiện có thay vì thêm mới!";
+            $errorMessage = 'Sinh viên ' . $studentName . ' (' . $studentCode . ') đã có điểm môn "' . $subjectName . '" (' . $subjectCode . '). Vui lòng chỉnh sửa điểm hiện có thay vì thêm mới!';
         } else {
             try {
-                $grade = new Grade(null, $student['id'], $subject_id, $score);
+                $grade = new Grade(null, $student['id'], $subject['id'], $score);
                 $gradeService->addGrade($grade);
                 header('Location: ?controller=grade&action=index');
                 exit;
@@ -75,7 +75,7 @@ class GradeController
 
             if ($grade != null) {
                 $studentCode = $grade->getStudentCode();
-                $subject_id = $grade->getSubjectId();
+                $subjectCode = $grade->getSubjectCode();
                 $scoreInput = $grade->getScore();
                 $errorMessage = null;
                 include APP_ROOT . '/app/views/grade/edit.php';
@@ -90,13 +90,13 @@ class GradeController
     // Xu ly cap nhat diem
     public function update($id)
     {
-        $studentCode = trim($_POST['student_code'] ?? '');
-        $subject_id = (int)($_POST['subject_id'] ?? 0);
+        $studentCode = strtoupper(trim($_POST['student_code'] ?? ''));
+        $subjectCode = strtoupper(trim($_POST['subject_code'] ?? ''));
         $scoreInput = $_POST['score'] ?? null;
         $score = is_numeric($scoreInput) ? (float)$scoreInput : -1;
         $gradeService = new GradeService();
         $student = $studentCode !== '' ? $gradeService->getStudentByCode($studentCode) : null;
-        $subject = $subject_id > 0 ? $gradeService->getSubjectById($subject_id) : null;
+        $subject = $subjectCode !== '' ? $gradeService->getSubjectByCode($subjectCode) : null;
 
         $grade = $gradeService->getGradeById($id);
         if ($grade === null) {
@@ -107,16 +107,16 @@ class GradeController
         if ($student === null) {
             $errorMessage = 'Mã sinh viên không tồn tại. Vui lòng kiểm tra lại.';
         } elseif ($subject === null) {
-            $errorMessage = 'ID môn học không tồn tại trong hệ thống. Vui lòng kiểm tra lại.';
+            $errorMessage = 'Mã môn học không tồn tại trong hệ thống. Vui lòng kiểm tra lại.';
         } elseif ($score < 0 || $score > 10) {
             $errorMessage = 'Vui lòng nhập điểm từ 0 đến 10.';
-        } elseif ($gradeService->hasGradeForSubject($student['id'], $subject_id, $id)) {
-            $subjectName = $subject['name'] ?? "ID #$subject_id";
+        } elseif ($gradeService->hasGradeForSubject($student['id'], $subject['id'], $id)) {
+            $subjectName = $subject['name'] ?? $subjectCode;
             $studentName = $student['student_name'] ?? $studentCode;
-            $errorMessage = "Sinh viên {$studentName} ({$studentCode}) đã có một bản ghi điểm khác cho môn \"{$subjectName}\"!";
+            $errorMessage = 'Sinh viên ' . $studentName . ' (' . $studentCode . ') đã có một bản ghi điểm khác cho môn "' . $subjectName . '" (' . $subjectCode . ')!';
         } else {
             try {
-                $updatedGrade = new Grade($id, $student['id'], $subject_id, $score);
+                $updatedGrade = new Grade($id, $student['id'], $subject['id'], $score);
                 $gradeService->updateGrade($updatedGrade);
                 header('Location: ?controller=grade&action=index');
                 exit;

@@ -46,6 +46,26 @@ class SubjectService {
         return null;
     }
 
+    public function getSubjectByCode($code) {
+        $code = strtoupper(trim($code));
+        if (empty($code)) return null;
+
+        $dbConnection = new DBConnection();
+        if ($dbConnection == null) return null;
+        $conn = $dbConnection->getConnection();
+        if ($conn == null) return null;
+
+        $sql = "SELECT * FROM subjects WHERE UPPER(code) = :code";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([':code' => $code]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            return new Subject($row['id'], $row['code'], $row['name'], $row['credits']);
+        }
+        return null;
+    }
+
     /**
      * Kiem tra xem ma mon hoc da ton tai chua (ho tro loai tru ID hien tai khi cap nhat)
      */

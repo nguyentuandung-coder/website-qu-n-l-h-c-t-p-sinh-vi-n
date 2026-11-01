@@ -16,7 +16,7 @@ class GradeService
             if ($conn != null) {
                 [$nameColumn, $classColumn] = $this->getStudentColumns($conn);
                 $sql = "SELECT g.*, s.student_code, s.$nameColumn AS student_name,
-                               s.$classColumn AS student_class, sub.name AS subject_name
+                               s.$classColumn AS student_class, sub.code AS subject_code, sub.name AS subject_name
                         FROM grades g
                         INNER JOIN students s ON s.id = g.student_id
                         LEFT JOIN subjects sub ON sub.id = g.subject_id";
@@ -53,7 +53,8 @@ class GradeService
                             $row['student_code'],
                             $row['student_name'],
                             $row['student_class'],
-                            $row['subject_name']
+                            $row['subject_name'],
+                            $row['subject_code'] ?? null
                         );
 
                         $grades[] = $grade;
@@ -101,7 +102,7 @@ class GradeService
             if ($conn != null) {
                 [$nameColumn, $classColumn] = $this->getStudentColumns($conn);
                 $sql = "SELECT g.*, s.student_code, s.$nameColumn AS student_name,
-                               s.$classColumn AS student_class, sub.name AS subject_name
+                               s.$classColumn AS student_class, sub.code AS subject_code, sub.name AS subject_name
                         FROM grades g
                         INNER JOIN students s ON s.id = g.student_id
                         LEFT JOIN subjects sub ON sub.id = g.subject_id
@@ -120,7 +121,8 @@ class GradeService
                         $row['student_code'],
                         $row['student_name'],
                         $row['student_class'],
-                        $row['subject_name']
+                        $row['subject_name'],
+                        $row['subject_code'] ?? null
                     );
                 }
             }
@@ -148,6 +150,20 @@ class GradeService
 
         $student = $stmt->fetch(PDO::FETCH_ASSOC);
         return $student ?: null;
+    }
+
+    public function getSubjectByCode($subjectCode)
+    {
+        $dbConnection = new DBConnection();
+        $conn = $dbConnection->getConnection();
+
+        if ($conn === null) {
+            return null;
+        }
+
+        $stmt = $conn->prepare("SELECT * FROM subjects WHERE UPPER(code) = :code");
+        $stmt->execute(['code' => strtoupper(trim($subjectCode))]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
     public function getSubjectById($subjectId)
