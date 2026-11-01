@@ -8,52 +8,7 @@ class UserService {
     public function __construct() {
         $db = new DbConnection();
         $this->conn = $db->getConnection();
-        $this->createTableIfNotExists();
-        $this->seedAdminIfNotExists();
     }
-
-    private function createTableIfNotExists() {
-        if ($this->conn == null) {
-            return;
-        }
-
-        // Tao bang users tinh gon chuan cho Quan tri vien
-        $sql = "CREATE TABLE IF NOT EXISTS users (
-            id INT PRIMARY KEY AUTO_INCREMENT,
-            fullname VARCHAR(100) NOT NULL,
-            email VARCHAR(100) NOT NULL UNIQUE,
-            password VARCHAR(255) NOT NULL,
-            role VARCHAR(20) NOT NULL DEFAULT 'admin',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
-
-        $this->conn->exec($sql);
-    }
-
-    /**
-     * Tu dong khoi tao tai khoan Quan tri vien mac dinh neu chua co
-     */
-    public function seedAdminIfNotExists() {
-        if ($this->conn == null) {
-            return;
-        }
-
-        try {
-            $stmt = $this->conn->prepare("SELECT COUNT(*) FROM users WHERE role = 'admin' OR email = 'admin@studyhub.edu.vn'");
-            $stmt->execute();
-            $count = (int)$stmt->fetchColumn();
-
-            if ($count === 0) {
-                $hashedPassword = password_hash('admin123', PASSWORD_BCRYPT);
-                $insert = $this->conn->prepare("INSERT INTO users (fullname, email, password, role) 
-                                                VALUES ('Quản trị viên Hệ thống', 'admin@studyhub.edu.vn', :password, 'admin')");
-                $insert->execute([':password' => $hashedPassword]);
-            }
-        } catch (Exception $e) {
-            // Khong ngat chuong trinh neu gap loi ghi
-        }
-    }
-
     public function emailExists($email) {
         if ($this->conn == null) return false;
         $stmt = $this->conn->prepare("SELECT COUNT(*) FROM users WHERE email = :email");
