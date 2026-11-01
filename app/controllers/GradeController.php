@@ -1,5 +1,6 @@
 <?php
 require_once APP_ROOT . '/app/services/GradeService.php';
+require_once APP_ROOT . '/app/services/SubjectService.php';
 
 class GradeController
 {
@@ -8,7 +9,14 @@ class GradeController
     public function index()
     {
         $gradeService = new GradeService();
-        $grades = $gradeService->getAllGrades();
+        $subjectService = new SubjectService();
+
+        $selectedClass = trim($_GET['class'] ?? '');
+        $selectedSubject = (int)($_GET['subject_id'] ?? 0);
+
+        $classes = $gradeService->getAllClasses();
+        $subjects = $subjectService->getAllSubjects();
+        $grades = $gradeService->getAllGrades($selectedClass, $selectedSubject);
 
         include APP_ROOT . '/app/views/grade/index.php';
     }

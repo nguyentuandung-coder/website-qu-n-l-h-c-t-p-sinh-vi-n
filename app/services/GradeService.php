@@ -5,7 +5,7 @@ require_once APP_ROOT . '/app/models/Grade.php';
 class GradeService
 {
 
-    public function getAllGrades()
+    public function getAllGrades($className = null, $subjectId = null)
     {
         $grades = [];
         $dbConnection = new DBConnection();
@@ -19,9 +19,29 @@ class GradeService
                                s.$classColumn AS student_class, sub.name AS subject_name
                         FROM grades g
                         INNER JOIN students s ON s.id = g.student_id
-                        LEFT JOIN subjects sub ON sub.id = g.subject_id
-                        ORDER BY g.id ASC";
-                $stmt = $conn->query($sql);
+                        LEFT JOIN subjects sub ON sub.id = g.subject_id";
+
+                $where = [];
+                $params = [];
+
+                if (!empty($className)) {
+                    $where[] = "s.$classColumn = :class_name";
+                    $params[':class_name'] = $className;
+                }
+
+                if (!empty($subjectId)) {
+                    $where[] = "g.subject_id = :subject_id";
+                    $params[':subject_id'] = (int)$subjectId;
+                }
+
+                if (!empty($where)) {
+                    $sql .= " WHERE " . implode(" AND ", $where);
+                }
+
+                $sql .= " ORDER BY g.id ASC";
+
+                $stmt = $conn->prepare($sql);
+                $stmt->execute($params);
 
                 if ($stmt) {
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -43,6 +63,30 @@ class GradeService
         }
 
         return $grades;
+    }
+
+    public function getAllClasses()
+    {
+        $classes = [];
+        $dbConnection = new DBConnection();
+
+        if ($dbConnection != null) {
+            $conn = $dbConnection->getConnection();
+
+            if ($conn != null) {
+                [$nameColumn, $classColumn] = $this->getStudentColumns($conn);
+                $sql = "SELECT DISTINCT $classColumn AS class_name 
+                        FROM students 
+                        WHERE $classColumn IS NOT NULL AND $classColumn <> '' 
+                        ORDER BY class_name ASC";
+                $stmt = $conn->query($sql);
+                if ($stmt) {
+                    $classes = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                }
+            }
+        }
+
+        return $classes;
     }
 
     public function getAllGrade()

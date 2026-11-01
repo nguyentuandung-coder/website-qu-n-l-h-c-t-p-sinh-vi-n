@@ -73,6 +73,87 @@
                     </a>
                 </div>
 
+                <!-- Thanh Bo Loc Lop & Mon Hoc -->
+                <div class="filter-card mb-4" style="background: #ffffff; border: 1px solid #eeeeF5; border-radius: 16px; padding: 18px 24px; box-shadow: 0 2px 8px rgba(20, 20, 60, 0.03);">
+                    <form method="GET" action="" class="row g-3 align-items-end">
+                        <input type="hidden" name="controller" value="grade">
+                        <input type="hidden" name="action" value="index">
+
+                        <!-- Loc theo Lop -->
+                        <div class="col-md-4 col-sm-6">
+                            <label class="form-label mb-1" style="font-size: 13px; font-weight: 600; color: #475569;">
+                                <i class="bi bi-people-fill text-primary me-1"></i> Lớp học
+                            </label>
+                            <select name="class" class="form-select form-select-sm" style="border-radius: 10px; height: 40px; font-size: 13.5px; border-color: #e2e8f0;">
+                                <option value="">-- Tất cả các lớp --</option>
+                                <?php if (!empty($classes)): ?>
+                                    <?php foreach ($classes as $c): ?>
+                                        <option value="<?= htmlspecialchars($c) ?>" <?= ($selectedClass ?? '') === $c ? 'selected' : '' ?>>
+                                            Lớp <?= htmlspecialchars($c) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+
+                        <!-- Loc theo Mon hoc -->
+                        <div class="col-md-4 col-sm-6">
+                            <label class="form-label mb-1" style="font-size: 13px; font-weight: 600; color: #475569;">
+                                <i class="bi bi-book-fill text-primary me-1"></i> Môn học
+                            </label>
+                            <select name="subject_id" class="form-select form-select-sm" style="border-radius: 10px; height: 40px; font-size: 13.5px; border-color: #e2e8f0;">
+                                <option value="0">-- Tất cả các môn học --</option>
+                                <?php if (!empty($subjects)): ?>
+                                    <?php foreach ($subjects as $s): ?>
+                                        <option value="<?= $s->getId() ?>" <?= ($selectedSubject ?? 0) == $s->getId() ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($s->getName()) ?> (<?= htmlspecialchars($s->getCode()) ?>)
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+
+                        <!-- Nut thao tac -->
+                        <div class="col-md-4 col-sm-12 d-flex gap-2">
+                            <button type="submit" class="btn btn-purple d-flex align-items-center justify-content-center" style="height: 40px; border-radius: 10px; padding: 0 20px; font-size: 13.5px;">
+                                <i class="bi bi-funnel-fill me-1"></i> Lọc dữ liệu
+                            </button>
+
+                            <?php if (!empty($selectedClass) || !empty($selectedSubject)): ?>
+                                <a href="?controller=grade&action=index" class="btn btn-light-purple d-flex align-items-center justify-content-center" style="height: 40px; border-radius: 10px; padding: 0 16px; font-size: 13.5px;" title="Xóa bộ lọc">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i> Đặt lại
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </form>
+
+                    <?php if (!empty($selectedClass) || !empty($selectedSubject)): ?>
+                        <div class="mt-2 pt-2 border-top d-flex align-items-center gap-2" style="font-size: 12.5px; color: #64748b;">
+                            <i class="bi bi-info-circle text-primary"></i>
+                            <span>
+                                Đang lọc: 
+                                <strong><?= !empty($selectedClass) ? 'Lớp ' . htmlspecialchars($selectedClass) : 'Mọi lớp' ?></strong> 
+                                • 
+                                <strong>
+                                    <?php
+                                        $subName = 'Mọi môn';
+                                        if (!empty($selectedSubject) && !empty($subjects)) {
+                                            foreach ($subjects as $sb) {
+                                                if ($sb->getId() == $selectedSubject) {
+                                                    $subName = 'Môn ' . $sb->getName();
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        echo htmlspecialchars($subName);
+                                    ?>
+                                </strong>
+                                (Tìm thấy <strong><?= count($grades) ?></strong> kết quả)
+                            </span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
                 <div class="table-card">
                     <div class="table-card-header">
                         <h4 class="table-card-title">
@@ -130,13 +211,23 @@
                                         <td colspan="7">
                                             <div class="empty-table-state">
                                                 <div class="empty-table-icon"><i class="bi bi-journal-x"></i></div>
-                                                <h5 style="font-weight: 700; color: #1e293b; margin-bottom: 6px;">Chưa có điểm nào</h5>
-                                                <p style="color: #64748b; font-size: 13.5px; max-width: 420px; margin: 0 auto 18px;">
-                                                    Hiện tại chưa có điểm trong cơ sở dữ liệu. Hãy thêm điểm đầu tiên để bắt đầu quản lý.
-                                                </p>
-                                                <a href="?controller=addGrade" class="btn-add-grade">
-                                                    <i class="bi bi-plus-circle-fill"></i><span>Thêm điểm ngay</span>
-                                                </a>
+                                                <?php if (!empty($selectedClass) || !empty($selectedSubject)): ?>
+                                                    <h5 style="font-weight: 700; color: #1e293b; margin-bottom: 6px;">Không tìm thấy kết quả phù hợp</h5>
+                                                    <p style="color: #64748b; font-size: 13.5px; max-width: 420px; margin: 0 auto 18px;">
+                                                        Không có bản ghi điểm nào thỏa mãn điều kiện lọc. Hãy thử chọn lớp hoặc môn học khác.
+                                                    </p>
+                                                    <a href="?controller=grade&action=index" class="btn btn-light-purple" style="font-size: 13px;">
+                                                        <i class="bi bi-arrow-counterclockwise me-1"></i> Xóa bộ lọc
+                                                    </a>
+                                                <?php else: ?>
+                                                    <h5 style="font-weight: 700; color: #1e293b; margin-bottom: 6px;">Chưa có điểm nào</h5>
+                                                    <p style="color: #64748b; font-size: 13.5px; max-width: 420px; margin: 0 auto 18px;">
+                                                        Hiện tại chưa có điểm trong cơ sở dữ liệu. Hãy thêm điểm đầu tiên để bắt đầu quản lý.
+                                                    </p>
+                                                    <a href="?controller=addGrade" class="btn-add-grade">
+                                                        <i class="bi bi-plus-circle-fill"></i><span>Thêm điểm ngay</span>
+                                                    </a>
+                                                <?php endif; ?>
                                             </div>
                                         </td>
                                     </tr>

@@ -122,7 +122,7 @@
 
 
                 <!-- Cac the thong ke -->
-                <section class="stats-row">
+                <section class="stats-row" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
 
                     <div class="stat-card">
                         <div class="stat-top">
@@ -168,28 +168,7 @@
                     </div>
 
 
-                    <div class="stat-card">
-                        <div class="stat-top">
-                            <div>
-                                <p class="stat-label">ĐIỂM TRUNG BÌNH</p>
-                                <h2 class="stat-number">
-                                    <?= $averageScore !== null ? number_format($averageScore, 2) : '--' ?>
-                                </h2>
-                            </div>
 
-                            <div class="stat-icon">
-                                <i class="bi bi-graph-up-arrow"></i>
-                            </div>
-                        </div>
-
-                        <p class="stat-description">
-                            Điểm trung bình trên thang điểm 10
-                        </p>
-
-                        <div class="progress-line">
-                            <div class="progress-value" style="width: 50%;"></div>
-                        </div>
-                    </div>
 
                 </section>
 
