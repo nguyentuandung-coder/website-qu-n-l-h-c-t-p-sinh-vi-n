@@ -224,8 +224,7 @@
 
                                                     <a href="?controller=deleteStudent&id=<?= urlencode((string)$student->getId()) ?>"
                                                         class="btn-action-delete"
-                                                        title="Xóa sinh viên"
-                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa sinh viên này?')">
+                                                        title="Xóa sinh viên">
                                                         <i class="bi bi-trash3"></i>
                                                     </a>
 
