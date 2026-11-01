@@ -94,7 +94,7 @@ class GradeService
         $conn = $dbConnection->getConnection();
 
         if ($conn === null) {
-            throw new RuntimeException('KhÃ´ng thá»ƒ káº¿t ná»‘i cÆ¡ sá»Ÿ dá»¯ liá»‡u Ä‘á»ƒ kiá»ƒm tra mÃ£ sinh viÃªn.');
+            throw new RuntimeException('Không thể kết nối cơ sở dữ liệu để kiểm tra mã sinh viên.');
         }
 
         [$nameColumn, $classColumn] = $this->getStudentColumns($conn);
@@ -228,7 +228,7 @@ class GradeService
             : (in_array('class', $columns, true) ? 'class' : null);
 
         if ($nameColumn === null || $classColumn === null) {
-            throw new RuntimeException('KhÃ´ng tÃ¬m tháº¥y cá»™t há» tÃªn hoáº·c lá»›p trong báº£ng students.');
+            throw new RuntimeException('Không tìm thấy cột họ tên hoặc lớp trong bảng students.');
         }
 
         return [$nameColumn, $classColumn];
